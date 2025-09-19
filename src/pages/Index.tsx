@@ -6,6 +6,7 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import Cart from "@/components/Cart";
 import HalfPizzaModal from "@/components/HalfPizzaModal";
 import PizzaCustomizationModal from "@/components/PizzaCustomizationModal";
+import ComboCustomizationModal from "@/components/ComboCustomizationModal";
 import FloatingCartButton from "@/components/FloatingCartButton";
 import CheckoutModal from "@/components/CheckoutModal";
 import { useCart } from "@/hooks/useCart";
@@ -35,8 +36,10 @@ const Index = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isHalfPizzaModalOpen, setIsHalfPizzaModalOpen] = useState(false);
   const [isPizzaCustomizationOpen, setIsPizzaCustomizationOpen] = useState(false);
+  const [isComboCustomizationOpen, setIsComboCustomizationOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [selectedPizza, setSelectedPizza] = useState(null);
+  const [selectedCombo, setSelectedCombo] = useState(null);
   const [preSelectedPizzaForHalf, setPreSelectedPizzaForHalf] = useState(null);
   const [preSelectedPizzaForCustomization, setPreSelectedPizzaForCustomization] = useState(null);
   const [activeCategory, setActiveCategory] = useState('pizzas-promocionais');
@@ -86,21 +89,14 @@ const Index = () => {
   };
 
   const handlePizzaClick = (pizzaId: string, preSelectedPizza?: string) => {
-    const pizza = products.find(p => p.id === pizzaId);
+    const product = products.find(p => p.id === pizzaId);
     
-    // Se for um combo, usar configuração especial para pizzas promocionais
-    if (pizza && pizza.category === 'combos') {
-      // Para combos, criar uma "pizza fictícia" para abrir o modal de customização
-      const comboConfig = {
-        ...pizza,
-        category: 'pizzas-promocionais' // Simula ser uma pizza para abrir o modal
-      };
-      setSelectedPizza(comboConfig);
-      setPreSelectedPizzaForCustomization(preSelectedPizza || null);
-      setIsComboContext(true);
-      setIsPizzaCustomizationOpen(true);
-    } else if (pizza && pizza.category.includes('pizzas')) {
-      setSelectedPizza(pizza);
+    // Se for um combo, abrir modal específico para combos
+    if (product && product.category === 'combos') {
+      setSelectedCombo(product);
+      setIsComboCustomizationOpen(true);
+    } else if (product && product.category.includes('pizzas')) {
+      setSelectedPizza(product);
       setPreSelectedPizzaForCustomization(preSelectedPizza || null);
       setIsComboContext(false);
       setIsPizzaCustomizationOpen(true);
@@ -108,15 +104,22 @@ const Index = () => {
   };
 
   const handleHalfPizzaClick = (pizzaId: string) => {
-    const pizza = products.find(p => p.id === pizzaId);
+    const product = products.find(p => p.id === pizzaId);
     
-    // Se for um combo, filtrar apenas pizzas promocionais
-    if (pizza && pizza.category === 'combos') {
-      setPreSelectedPizzaForHalf(null); // Sem pré-seleção para combos
-      setIsComboContext(true);
-      setIsHalfPizzaModalOpen(true);
-    } else if (pizza && pizza.category.includes('pizzas')) {
-      setPreSelectedPizzaForHalf(pizza);
+    // Se for um combo, usar modal específico com contexto de combo
+    if (product && product.category === 'combos') {
+      // Para Combo Família, abrir modal especial para meia-meia
+      if (product.pizzaCount === 2) {
+        setSelectedCombo(product);
+        setIsComboCustomizationOpen(true);
+      } else {
+        // Para outros combos, usar modal normal de meia-meia com contexto
+        setPreSelectedPizzaForHalf(null);
+        setIsComboContext(true);
+        setIsHalfPizzaModalOpen(true);
+      }
+    } else if (product && product.category.includes('pizzas')) {
+      setPreSelectedPizzaForHalf(product);
       setIsComboContext(false);
       setIsHalfPizzaModalOpen(true);
     }
@@ -267,6 +270,7 @@ const Index = () => {
           ? products.filter(p => p.category === 'pizzas-promocionais')
           : products.filter(p => p.category.includes('pizzas'))
         }
+        isComboContext={isComboContext}
         onAddToCart={addToCart}
         preSelectedFlavor={preSelectedPizzaForHalf}
       />
@@ -286,6 +290,17 @@ const Index = () => {
           ? ['pizzas-promocionais'] 
           : undefined
         }
+      />
+
+      {/* Combo Customization Modal */}
+      <ComboCustomizationModal
+        isOpen={isComboCustomizationOpen}
+        onClose={() => {
+          setIsComboCustomizationOpen(false);
+          setSelectedCombo(null);
+        }}
+        combo={selectedCombo}
+        onAddToCart={addToCart}
       />
 
       {/* PWA Install Prompt */}

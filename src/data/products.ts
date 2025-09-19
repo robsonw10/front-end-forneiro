@@ -10,6 +10,8 @@ export interface Product {
   isPopular?: boolean;
   ingredients?: string[];
   portions?: string;
+  drinkOptions?: string[];
+  pizzaCount?: number;
 }
 
 export const products: Product[] = [
@@ -17,20 +19,23 @@ export const products: Product[] = [
   {
     id: 'combo-casal',
     name: 'Pizza Combo Casal',
-    description: '1 Pizza grande (sabores 1 ao 10) + Borda requeijão grátis + 1 Coca Cola 2L',
+    description: '1 Pizza grande (sabores 1 ao 10) + Borda requeijão grátis + Refrigerante 2L',
     price: { broto: 63.99, grande: 63.99 },
     category: 'combos',
     isPopular: true,
-    ingredients: ['Pizza Grande', 'Borda Requeijão', 'Coca Cola 2L']
+    ingredients: ['Pizza Grande', 'Borda Requeijão', 'Refrigerante 2L'],
+    drinkOptions: ['coca-cola', 'sprite', 'fanta-laranja', 'fanta-uva']
   },
   {
     id: 'combo-promocao',
     name: 'Combo Família',
-    description: '2 Pizzas + Borda requeijão + Coca 2L',
+    description: '2 Pizzas + Borda requeijão + Refrigerante 2L',
     price: { broto: 114.99, grande: 114.99 },
     category: 'combos',
     isPopular: true,
-    ingredients: ['2 Pizzas', 'Borda Requeijão', 'Coca Cola 2L']
+    ingredients: ['2 Pizzas', 'Borda Requeijão', 'Refrigerante 2L'],
+    drinkOptions: ['coca-cola', 'sprite', 'fanta-laranja', 'fanta-uva'],
+    pizzaCount: 2
   },
 
   // PIZZAS PROMOCIONAIS
@@ -673,20 +678,6 @@ export const products: Product[] = [
     name: 'Fanta Uva',
     description: 'Refrigerante Fanta Uva gelado',
     price: { broto: 13.99, grande: 13.99 },
-    category: 'bebidas'
-  },
-  {
-    id: 'momesso-guarana',
-    name: 'Momesso Guaraná',
-    description: 'Refrigerante Guaraná Momesso gelado',
-    price: { broto: 8.99, grande: 8.99 },
-    category: 'bebidas'
-  },
-  {
-    id: 'momesso-tubaina',
-    name: 'Momesso Tubaína',
-    description: 'Refrigerante Tubaína Momesso gelado',
-    price: { broto: 8.99, grande: 8.99 },
     category: 'bebidas'
   },
 

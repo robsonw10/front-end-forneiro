@@ -13,6 +13,8 @@ interface Product {
   isPopular?: boolean;
   ingredients?: string[];
   portions?: string;
+  drinkOptions?: string[];
+  pizzaCount?: number;
 }
 
 interface MobileMenuAccordionProps {

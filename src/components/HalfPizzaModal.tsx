@@ -20,9 +20,10 @@ interface HalfPizzaModalProps {
   onAddToCart: (productId: string, quantity: number, productData: any) => void;
   preSelectedFlavor?: PizzaFlavor; // Sabor pré-selecionado
   allowedPizzaCategories?: string[]; // Categorias permitidas (opcional)
+  isComboContext?: boolean; // Se está no contexto de combo
 }
 
-const HalfPizzaModal = ({ isOpen, onClose, pizzas, onAddToCart, preSelectedFlavor, allowedPizzaCategories }: HalfPizzaModalProps) => {
+const HalfPizzaModal = ({ isOpen, onClose, pizzas, onAddToCart, preSelectedFlavor, allowedPizzaCategories, isComboContext = false }: HalfPizzaModalProps) => {
   const [selectedFlavor1, setSelectedFlavor1] = useState<PizzaFlavor | null>(preSelectedFlavor || null);
   const [selectedFlavor2, setSelectedFlavor2] = useState<PizzaFlavor | null>(null);
 
@@ -36,6 +37,8 @@ const HalfPizzaModal = ({ isOpen, onClose, pizzas, onAddToCart, preSelectedFlavo
   // Calcula o preço baseado no sabor mais caro (usando preço grande como referência)
   const calculatePrice = () => {
     if (!selectedFlavor1 || !selectedFlavor2) return 0;
+    // Para combos, não calcula preço aqui, apenas mostra que é grátis
+    if (isComboContext) return 0;
     return Math.max(selectedFlavor1.price.grande, selectedFlavor2.price.grande);
   };
 
@@ -211,12 +214,12 @@ const HalfPizzaModal = ({ isOpen, onClose, pizzas, onAddToCart, preSelectedFlavo
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-brand-red">
-                    R$ {calculatePrice().toFixed(2).replace('.', ',')}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Preço do sabor mais caro
-                  </div>
+          <div className="text-2xl font-bold text-brand-red">
+            {isComboContext ? 'Incluído no Combo' : `R$ ${calculatePrice().toFixed(2).replace('.', ',')}`}
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {isComboContext ? 'Pizza meio a meio incluída' : 'Preço do sabor mais caro'}
+          </div>
                 </div>
               </div>
 
@@ -247,7 +250,7 @@ const HalfPizzaModal = ({ isOpen, onClose, pizzas, onAddToCart, preSelectedFlavo
             disabled={!selectedFlavor1 || !selectedFlavor2}
             className="flex-1 bg-gradient-primary"
           >
-            Adicionar ao Carrinho - R$ {calculatePrice().toFixed(2).replace('.', ',')}
+            {isComboContext ? 'Confirmar Seleção' : `Adicionar ao Carrinho - R$ ${calculatePrice().toFixed(2).replace('.', ',')}`}
           </Button>
         </div>
       </DialogContent>

@@ -13,6 +13,8 @@ interface ProductCardProps {
   isPopular?: boolean;
   ingredients?: string[];
   portions?: string;
+  drinkOptions?: string[];
+  pizzaCount?: number;
   onAddToCart: (productId: string, quantity: number) => void;
   onPizzaClick?: (pizzaId: string, preSelectedPizza?: string) => void;
   onHalfPizzaClick?: (pizzaId: string) => void;
@@ -27,6 +29,8 @@ const ProductCard = ({
   isPopular,
   ingredients,
   portions,
+  drinkOptions,
+  pizzaCount,
   onAddToCart,
   onPizzaClick,
   onHalfPizzaClick
@@ -77,9 +81,6 @@ const ProductCard = ({
               </span>
             ) : (
               <>
-                <span className="text-lg font-bold text-brand-red">
-                  Broto: R$ {price.broto.toFixed(2).replace('.', ',')}
-                </span>
                 <span className="text-lg font-bold text-brand-red">
                   Grande: R$ {price.grande.toFixed(2).replace('.', ',')}
                 </span>

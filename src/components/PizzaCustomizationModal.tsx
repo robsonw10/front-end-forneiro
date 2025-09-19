@@ -364,42 +364,52 @@ const PizzaCustomizationModal = ({ isOpen, onClose, pizza, onAddToCart, preSelec
 
         <Separator />
 
-        {/* Tamanho */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Escolha o Tamanho</h3>
-          <RadioGroup value={size} onValueChange={(value: 'broto' | 'grande') => {
-            const previousSize = size;
-            setSize(value);
-            // Se mudou para broto e estava em meia-meia, volta para inteira
-            if (value === 'broto' && pizzaType === 'meia-meia') {
-              setPizzaType('inteira');
-              setSabor1('');
-              setSabor2('');
-            }
-            // Reset bordas e adicionais para recalcular preços
-            if (previousSize !== value) {
-              setBorda('sem-borda');
-              setAdicionais([]);
-            }
-          }}>
-            {sizeOptions.map((option) => (
-              <div key={option.id} className="flex items-center space-x-2 p-3 border rounded-lg">
-                <RadioGroupItem value={option.id} id={option.id} />
-                <Label htmlFor={option.id} className="flex-1 cursor-pointer">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="font-medium">{option.name}</div>
-                      <div className="text-sm text-muted-foreground">{option.description}</div>
+        {/* Tamanho - Apenas se não for combo ou se for combo sem restrição de broto */}
+        {!allowedPizzaCategories?.includes('pizzas-promocionais') && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Escolha o Tamanho</h3>
+            <RadioGroup value={size} onValueChange={(value: 'broto' | 'grande') => {
+              const previousSize = size;
+              setSize(value);
+              // Se mudou para broto e estava em meia-meia, volta para inteira
+              if (value === 'broto' && pizzaType === 'meia-meia') {
+                setPizzaType('inteira');
+                setSabor1('');
+                setSabor2('');
+              }
+              // Reset bordas e adicionais para recalcular preços
+              if (previousSize !== value) {
+                setBorda('sem-borda');
+                setAdicionais([]);
+              }
+            }}>
+              {sizeOptions.map((option) => (
+                <div key={option.id} className="flex items-center space-x-2 p-3 border rounded-lg">
+                  <RadioGroupItem value={option.id} id={option.id} />
+                  <Label htmlFor={option.id} className="flex-1 cursor-pointer">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="font-medium">{option.name}</div>
+                        <div className="text-sm text-muted-foreground">{option.description}</div>
+                      </div>
+                      <div className="font-bold text-brand-red">
+                        R$ {option.price.toFixed(2).replace('.', ',')}
+                      </div>
                     </div>
-                    <div className="font-bold text-brand-red">
-                      R$ {option.price.toFixed(2).replace('.', ',')}
-                    </div>
-                  </div>
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        )}
+
+        {/* Para combos, definir tamanho como grande automaticamente */}
+        {allowedPizzaCategories?.includes('pizzas-promocionais') && (() => {
+          if (size !== 'grande') {
+            setTimeout(() => setSize('grande'), 0);
+          }
+          return null;
+        })()}
 
         <Separator />
 
