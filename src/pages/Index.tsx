@@ -108,17 +108,13 @@ const Index = () => {
     
     // Se for um combo, usar modal específico com contexto de combo
     if (product && product.category === 'combos') {
-      // Para Combo Família, abrir modal especial para meia-meia
-      if (product.pizzaCount === 2) {
-        setSelectedCombo(product);
-        setIsComboCustomizationOpen(true);
-      } else {
-        // Para outros combos, usar modal normal de meia-meia com contexto
-        setPreSelectedPizzaForHalf(null);
-        setIsComboContext(true);
-        setIsHalfPizzaModalOpen(true);
-      }
+      // Para todos os combos, usar modal de meia-meia com contexto
+      setSelectedCombo(product);
+      setPreSelectedPizzaForHalf(null);
+      setIsComboContext(true);
+      setIsHalfPizzaModalOpen(true);
     } else if (product && product.category.includes('pizzas')) {
+      setSelectedCombo(null);
       setPreSelectedPizzaForHalf(product);
       setIsComboContext(false);
       setIsHalfPizzaModalOpen(true);
@@ -264,6 +260,7 @@ const Index = () => {
         onClose={() => {
           setIsHalfPizzaModalOpen(false);
           setPreSelectedPizzaForHalf(null);
+          setSelectedCombo(null);
           setIsComboContext(false);
         }}
         pizzas={isComboContext 
@@ -271,6 +268,7 @@ const Index = () => {
           : products.filter(p => p.category.includes('pizzas'))
         }
         isComboContext={isComboContext}
+        combo={selectedCombo}
         onAddToCart={addToCart}
         preSelectedFlavor={preSelectedPizzaForHalf}
       />
